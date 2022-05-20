@@ -26,7 +26,7 @@ import java.util.List;
 
 public class TailLauncher {
     @Option(name = "-o", usage = "output file name")
-    public File outputFile = new File(".");
+    public File outputFile;
     public boolean outputToFile;
 
     @Option(name = "-c", usage = "extract last num symbols")
@@ -65,17 +65,19 @@ public class TailLauncher {
                 System.out.println(fileName);
                 ArrayList<String> strings = tail.readFromFile(fileName);
                 if (extractsSymbols)
-                    System.out.println(tail.extractSymbols(strings, symbolsToExtract));
+                    tail.extractSymbols(strings, symbolsToExtract);
                 else
-                    System.out.println(tail.extractStrings(strings, stringsToExtract));
+                    tail.extractStrings(strings, stringsToExtract);
             }
         }
         else {
-            ArrayList<String> strings = tail.readFromConsole();
-            if (extractsSymbols)
-                System.out.println(tail.extractSymbols(strings, symbolsToExtract));
+            List<String> strings = tail.readFromConsole();
+            System.out.println();
+            System.out.println("Result:");
+            if (extractsSymbols){
+                tail.extractSymbols(strings, symbolsToExtract);}
             else
-                System.out.println(tail.extractStrings(strings, stringsToExtract));
+                tail.extractStrings(strings, stringsToExtract);
         }
 
     }

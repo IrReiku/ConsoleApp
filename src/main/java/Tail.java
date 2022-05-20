@@ -1,55 +1,70 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-public class Tail{
+public class Tail {
 
     public ArrayList<String> readFromFile(String fileName) {
         ArrayList<String> fileStrings = new ArrayList<>();
-        File file = new File(fileName);
-        Scanner scanner;
+        FileInputStream fis;
         try {
-            scanner = new Scanner(file);
+            fis = new FileInputStream(fileName);
+            System.setIn(fis);
+
+            Scanner scanner;
+            scanner = new Scanner(System.in);
             while (scanner.hasNextLine()) fileStrings.add(scanner.nextLine());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
         return fileStrings;
     }
 
-    public ArrayList<String> readFromConsole() {
-        ArrayList<String> consoleStrings = new ArrayList<>();
+    public List<String> readFromConsole() {
+        List<String> consoleStrings = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Type in:");
-        while (scanner.hasNextLine() && !scanner.nextLine().equals("END")) {
-            consoleStrings.add(scanner.nextLine());
-            if (scanner.nextLine().equals("END")) break;
+
+        System.out.println("Enter the text:");
+        System.out.println("Enter \"END\" to end the input.");
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.equals("END")) break;
+            consoleStrings.add(line);
         }
         scanner.close();
+
         return consoleStrings;
     }
 
-    public String extractSymbols(ArrayList<String> strings, int symbolsToExtract) {
-        String text = strings.toString();
-        return text.substring(text.length() - symbolsToExtract, text.length() - 1);
-    }
+    public void extractSymbols(List<String> strings, int symbolsToExtract) {
+        List<String> output = new ArrayList<>();
+        String[] arrayStrings = strings.toArray(new String[0]);
 
-    public String extractStrings(ArrayList<String> strings, int stringsToExtract) {
-        return strings.subList(strings.size() - stringsToExtract, strings.size() - 1).toString();
-    }
+        for (int i = arrayStrings.length - 1; i >= 0 && symbolsToExtract > 0; --i) {
+            String currentString = arrayStrings[i];
+            StringBuilder sb = new StringBuilder();
+            for (int j = currentString.length() - 1; symbolsToExtract > 0 && j >= 0; --j, --symbolsToExtract) {
+                sb.append(currentString.charAt(j));
+            }
+            output.add(0, sb.reverse().toString());
+        }
 
-    /* public void fileOutput(String outputStrings, String outputName) {
-        try {
-            FileWriter writer = new FileWriter(outputName);
-            writer.write(outputStrings);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (String string : output) {
+            System.out.println(string);
         }
     }
 
-    public void consoleOutput(String outputStrings) {
-        System.out.println(outputStrings);
-    } */
+    public void extractStrings(List<String> strings, int stringsToExtract) {
+        List<String> output = strings;
 
+        if (strings.size() >= stringsToExtract) {
+            output = strings.subList(strings.size() - stringsToExtract, strings.size());
+        }
+
+        for (String string : output) {
+            System.out.println(string);
+        }
     }
+}
 
