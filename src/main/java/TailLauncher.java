@@ -4,6 +4,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,19 +29,16 @@ import java.util.List;
 
 public class TailLauncher {
     @Option(name = "-o", usage = "output file name")
-    public File outputFile;
-    public boolean outputToFile;
+    public String outputFileName;
 
     @Option(name = "-c", usage = "extract last num symbols")
-    public int symbolsToExtract;
-    public boolean extractsSymbols;
+    public int symbolsToExtract = -1;
 
     @Option(name = "-n", usage = "extract last num strings", forbids = {"-c"})
     public int stringsToExtract = 10;
 
     @Argument()
     public List<String> fileNames = new ArrayList<>();
-    public boolean inputFromFile;
 
     public static void main(String[] args) {
         new TailLauncher().launch(args);
@@ -56,15 +56,15 @@ public class TailLauncher {
             parser.printUsage(System.err);
             return;
         }
-        if (outputToFile)
-            System.out.println(outputFile);
+
         Tail tail = new Tail();
 
-        if (inputFromFile) {
+        if (!fileNames.isEmpty()) {
             for (String fileName : fileNames) {
                 System.out.println(fileName);
                 ArrayList<String> strings = tail.readFromFile(fileName);
-                if (extractsSymbols)
+                if (!outputFileName.isEmpty()) new Tail().setOutToFile(outputFileName);
+                if (symbolsToExtract != -1)
                     tail.extractSymbols(strings, symbolsToExtract);
                 else
                     tail.extractStrings(strings, stringsToExtract);
@@ -72,10 +72,9 @@ public class TailLauncher {
         }
         else {
             List<String> strings = tail.readFromConsole();
-            System.out.println();
-            System.out.println("Result:");
-            if (extractsSymbols){
-                tail.extractSymbols(strings, symbolsToExtract);}
+            if (!outputFileName.isEmpty()) new Tail().setOutToFile(outputFileName);
+            if (symbolsToExtract != -1)
+                tail.extractSymbols(strings, symbolsToExtract);
             else
                 tail.extractStrings(strings, stringsToExtract);
         }

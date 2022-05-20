@@ -27,6 +27,7 @@ public class Tail {
 
         System.out.println("Enter the text:");
         System.out.println("Enter \"END\" to end the input.");
+
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             if (line.equals("END")) break;
@@ -65,6 +66,16 @@ public class Tail {
         for (String string : output) {
             System.out.println(string);
         }
+    }
+    public void setOutToFile(String outputFileName) {
+        String sourcePath = "C:\\Users\\TEMP\\IdeaProjects\\ConsoleApp\\src\\main\\resources\\";
+        PrintStream ps = null;
+        try {
+            ps = new PrintStream(sourcePath + outputFileName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.setOut(ps);
     }
 }
 
