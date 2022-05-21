@@ -4,15 +4,14 @@ import java.util.List;
 import java.util.Scanner;
 public class Tail {
 
+    String sourcePath = "C:\\Users\\TEMP\\IdeaProjects\\ConsoleApp\\src\\main\\resources\\";
+
     public ArrayList<String> readFromFile(String fileName) {
         ArrayList<String> fileStrings = new ArrayList<>();
         FileInputStream fis;
         try {
-            fis = new FileInputStream(fileName);
-            System.setIn(fis);
-
-            Scanner scanner;
-            scanner = new Scanner(System.in);
+            fis = new FileInputStream(sourcePath + fileName);
+            Scanner scanner = new Scanner(fis);
             while (scanner.hasNextLine()) fileStrings.add(scanner.nextLine());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -68,7 +67,6 @@ public class Tail {
         }
     }
     public void setOutToFile(String outputFileName) {
-        String sourcePath = "C:\\Users\\TEMP\\IdeaProjects\\ConsoleApp\\src\\main\\resources\\";
         PrintStream ps = null;
         try {
             ps = new PrintStream(sourcePath + outputFileName);

@@ -3,10 +3,6 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +40,7 @@ public class TailLauncher {
         new TailLauncher().launch(args);
     }
 
-    private void launch(String[] args) {
+    public void launch(String[] args) {
         CmdLineParser parser = new CmdLineParser(this);
 
         try {
@@ -61,9 +57,9 @@ public class TailLauncher {
 
         if (!fileNames.isEmpty()) {
             for (String fileName : fileNames) {
-                System.out.println(fileName);
                 ArrayList<String> strings = tail.readFromFile(fileName);
-                if (!outputFileName.isEmpty()) new Tail().setOutToFile(outputFileName);
+                if (outputFileName != null) new Tail().setOutToFile(outputFileName);
+                System.out.println(fileName);
                 if (symbolsToExtract != -1)
                     tail.extractSymbols(strings, symbolsToExtract);
                 else
@@ -72,13 +68,11 @@ public class TailLauncher {
         }
         else {
             List<String> strings = tail.readFromConsole();
-            if (!outputFileName.isEmpty()) new Tail().setOutToFile(outputFileName);
+            if (outputFileName != null) new Tail().setOutToFile(outputFileName);
             if (symbolsToExtract != -1)
                 tail.extractSymbols(strings, symbolsToExtract);
             else
                 tail.extractStrings(strings, stringsToExtract);
         }
-
     }
-
 }
